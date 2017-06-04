@@ -1,7 +1,7 @@
 # README
 [![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Release](https://jitpack.io/v/nekocode/ResourceInspector.svg)](https://jitpack.io/#nekocode/ResourceInspector)
 
-A debug tool to inspect the current screen's used layout files.
+A debug tool to inspect the current `Activity`'s used layout files.
 
 ## Getting started
 
