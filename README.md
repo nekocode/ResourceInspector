@@ -3,6 +3,8 @@
 
 A debug tool to inspect the current `Activity`'s used layout files.
 
+![Screenshot](img/screenshot.png)
+
 ## Getting started
 
 In your `build.gradle`:
