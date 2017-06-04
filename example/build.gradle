@@ -13,7 +13,7 @@ android {
     buildToolsVersion BUILD_TOOLS_VERSION
     defaultConfig {
         applicationId "cn.nekocode.resinspector.example"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -30,8 +30,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     debugCompile project(':resinspector')
-    releaseCompile project(':resinspector-no-op')
-    testCompile project(':resinspector-no-op')
+//    releaseCompile project(':resinspector-no-op')
+//    testCompile project(':resinspector-no-op')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBS_VERSION"
 }
