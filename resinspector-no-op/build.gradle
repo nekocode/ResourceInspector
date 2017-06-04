@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.nekocode'
-
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
     buildToolsVersion BUILD_TOOLS_VERSION

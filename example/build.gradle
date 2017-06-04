@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        nekocode {
+            keyAlias 'nekocode'
+            keyPassword '110110zxc'
+            storeFile file('/Users/nekocode/AndroidStudioProjects/nekocode.jks')
+            storePassword '110110zxc'
+        }
+    }
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
     buildToolsVersion BUILD_TOOLS_VERSION
-
     defaultConfig {
         applicationId "cn.nekocode.resinspector.example"
         minSdkVersion 14
@@ -15,13 +22,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.nekocode
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":lib-resinspector")
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    debugCompile project(':resinspector')
+    releaseCompile project(':resinspector-no-op')
+    testCompile project(':resinspector-no-op')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBS_VERSION"
 }
