@@ -16,7 +16,6 @@
 
 package cn.nekocode.resinspector;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -25,7 +24,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
@@ -93,14 +91,40 @@ public class ResourceInspector {
                 return view;
             }
 
+            View targetView = view;
+            if (root != null && attachToRoot) {
+                targetView = root.getChildAt(root.getChildCount() - 1);
+            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                final Drawable foreground = view.getForeground();
+                final Drawable foreground = targetView.getForeground();
                 if (foreground == null) {
-                    view.setForeground(new TipDrawable(resName));
+                    targetView.setForeground(new TipDrawable(resName));
                 } else {
-                    view.setForeground(new LayerDrawable(new Drawable[] {
+                    targetView.setForeground(new LayerDrawable(new Drawable[]{
                             foreground, new TipDrawable(resName)
                     }));
+                }
+
+            } else {
+                final Drawable background = targetView.getBackground();
+                if (background == null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        targetView.setBackground(new TipDrawable(resName));
+                    } else {
+                        targetView.setBackgroundDrawable(new TipDrawable(resName));
+                    }
+
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        targetView.setBackground(new LayerDrawable(new Drawable[] {
+                                background, new TipDrawable(resName)
+                        }));
+                    } else {
+                        targetView.setBackgroundDrawable(new LayerDrawable(new Drawable[] {
+                                background, new TipDrawable(resName)
+                        }));
+                    }
                 }
             }
 
@@ -108,9 +132,8 @@ public class ResourceInspector {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static class TipDrawable extends Drawable {
-        private static final float TEXT_SIZE = sp2px(14);
+        private static final float TEXT_SIZE = sp2px(10);
         private static final float PADDING = dp2px(4);
         private static final float BOUNDARY_WIDTH = dp2px(2);
         private static final Paint paint = new TextPaint();
@@ -122,7 +145,6 @@ public class ResourceInspector {
         private int alpha = 200;
 
         static {
-            paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
             paint.setTextSize(TEXT_SIZE);
             paint.setTextAlign(Paint.Align.CENTER);
@@ -139,44 +161,57 @@ public class ResourceInspector {
 
         @Override
         public void draw(@NonNull Canvas canvas) {
-            final Rect bound = getBounds();
+            final float left =0f, top = 0f, right = canvas.getWidth(), bottom = canvas.getHeight();
 
             /*
               Draw boundary and background
              */
             path.reset();
-            path.moveTo(bound.left, bound.top);
-            path.lineTo(bound.right, bound.top);
-            path.lineTo(bound.right, bound.bottom);
-            path.lineTo(bound.left, bound.bottom);
+            path.moveTo(left, top);
+            path.lineTo(right, top);
+            path.lineTo(right, bottom);
+            path.lineTo(left, bottom);
             path.close();
 
-            path2.reset();
-            path2.moveTo(bound.left + BOUNDARY_WIDTH, bound.top + BOUNDARY_WIDTH);
-            path2.lineTo(bound.right - BOUNDARY_WIDTH, bound.top + BOUNDARY_WIDTH);
-            path2.lineTo(bound.right - BOUNDARY_WIDTH, bound.bottom - BOUNDARY_WIDTH);
-            path2.lineTo(bound.left + BOUNDARY_WIDTH, bound.bottom - BOUNDARY_WIDTH);
-            path2.close();
-            path.op(path2, Path.Op.DIFFERENCE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                path2.reset();
+                path2.moveTo(left + BOUNDARY_WIDTH, top + BOUNDARY_WIDTH);
+                path2.lineTo(right - BOUNDARY_WIDTH, top + BOUNDARY_WIDTH);
+                path2.lineTo(right - BOUNDARY_WIDTH, bottom - BOUNDARY_WIDTH);
+                path2.lineTo(left + BOUNDARY_WIDTH, bottom - BOUNDARY_WIDTH);
+                path2.close();
+                path.op(path2, Path.Op.DIFFERENCE);
 
-            path2.reset();
-            path2.moveTo(bound.left, bound.top);
-            path2.lineTo(bound.left + textWidth, bound.top);
-            path2.lineTo(bound.left + textWidth, bound.top + textHeight);
-            path2.lineTo(bound.left, bound.top + textHeight);
-            path2.close();
-            path.op(path2, Path.Op.UNION);
+                path2.reset();
+                path2.moveTo(left, top);
+                path2.lineTo(left + textWidth, top);
+                path2.lineTo(left + textWidth, top + textHeight);
+                path2.lineTo(left, top + textHeight);
+                path2.close();
+                path.op(path2, Path.Op.UNION);
 
-            paint.setColor(Color.BLACK);
-            paint.setAlpha((int) (alpha * 0.5f));
-            canvas.drawPath(path, paint);
+                paint.setColor(Color.BLACK);
+                paint.setAlpha((int) (alpha * 0.5f));
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawPath(path, paint);
+
+            } else {
+                paint.setColor(Color.BLACK);
+                paint.setAlpha((int) (alpha * 0.5f));
+                paint.setStrokeWidth(BOUNDARY_WIDTH * 2);
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawPath(path, paint);
+
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawRect(left, top, left + textWidth, top + textHeight, paint);
+            }
 
             /*
               Draw text
              */
             paint.setColor(Color.WHITE);
             paint.setAlpha(alpha);
-            canvas.drawText(text, bound.left + tcx, bound.top + tcy, paint);
+            canvas.drawText(text, left + tcx, top + tcy, paint);
         }
 
         @Override
