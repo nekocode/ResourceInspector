@@ -20,8 +20,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":lib-resinspector")
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    debugCompile project(':resinspector')
+    releaseCompile project(':resinspector-no-op')
+    testCompile project(':resinspector-no-op')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBS_VERSION"
 }

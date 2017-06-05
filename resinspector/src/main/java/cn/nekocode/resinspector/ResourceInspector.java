@@ -43,7 +43,7 @@ import android.view.ViewGroup;
  */
 public class ResourceInspector {
 
-    public static android.content.ContextWrapper wrap(Context base) {
+    public static Context wrap(Context base) {
         return new ContextWrapper(base);
     }
 
