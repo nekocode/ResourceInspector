@@ -20,6 +20,8 @@ dependencies {
 }
 ```
 
+[lastest-version](https://jitpack.io/#nekocode/ResourceInspector)
+
 In your (Base) `Activity` class:
 
 ```java
