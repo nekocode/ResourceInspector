@@ -19,7 +19,6 @@ package cn.nekocode.resinspector;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -96,15 +95,8 @@ public class ResourceInspector {
                 targetView = root.getChildAt(root.getChildCount() - 1);
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                final Drawable foreground = targetView.getForeground();
-                if (foreground == null) {
-                    targetView.setForeground(new TipDrawable(resName));
-                } else {
-                    targetView.setForeground(new LayerDrawable(new Drawable[]{
-                            foreground, new TipDrawable(resName)
-                    }));
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                targetView.getOverlay().add(new TipDrawable(resName));
 
             } else {
                 final Drawable background = targetView.getBackground();
@@ -133,9 +125,11 @@ public class ResourceInspector {
     }
 
     private static class TipDrawable extends Drawable {
+        private static final int OVERLAY_COLOR = 0xFFFF0000;
+        private static final int TEXT_COLOR = 0xFFFFFFFF;
         private static final float TEXT_SIZE = sp2px(10);
         private static final float PADDING = dp2px(4);
-        private static final float BOUNDARY_WIDTH = dp2px(2);
+        private static final float BOUNDARY_WIDTH = 1;
         private static final Paint paint = new TextPaint();
         private static final Path path = new Path();
         private static final Path path2 = new Path();
@@ -161,7 +155,7 @@ public class ResourceInspector {
 
         @Override
         public void draw(@NonNull Canvas canvas) {
-            final float left =0f, top = 0f, right = canvas.getWidth(), bottom = canvas.getHeight();
+            final float left = 0f, top = 0f, right = canvas.getWidth(), bottom = canvas.getHeight();
 
             /*
               Draw boundary and background
@@ -190,14 +184,14 @@ public class ResourceInspector {
                 path2.close();
                 path.op(path2, Path.Op.UNION);
 
-                paint.setColor(Color.BLACK);
+                paint.setColor(OVERLAY_COLOR);
                 paint.setAlpha((int) (alpha * 0.5f));
                 paint.setStyle(Paint.Style.FILL);
                 canvas.drawPath(path, paint);
 
             } else {
-                paint.setColor(Color.BLACK);
-                paint.setAlpha((int) (alpha * 0.5f));
+                paint.setColor(OVERLAY_COLOR);
+                paint.setAlpha(alpha);
                 paint.setStrokeWidth(BOUNDARY_WIDTH * 2);
                 paint.setStyle(Paint.Style.STROKE);
                 canvas.drawPath(path, paint);
@@ -209,7 +203,7 @@ public class ResourceInspector {
             /*
               Draw text
              */
-            paint.setColor(Color.WHITE);
+            paint.setColor(TEXT_COLOR);
             paint.setAlpha(alpha);
             canvas.drawText(text, left + tcx, top + tcy, paint);
         }
@@ -217,6 +211,7 @@ public class ResourceInspector {
         @Override
         public void setAlpha(@IntRange(from = 0, to = 255) int alpha) {
             this.alpha = alpha;
+            invalidateSelf();
         }
 
         @Override
