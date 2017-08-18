@@ -37,7 +37,7 @@ public class ResourceInspector {
         return new InspectorContextWrapper(base);
     }
 
-    public static void initialize(@NonNull final Context application) {
+    public static void initialize(@NonNull final Context context) {
 
     }
 
