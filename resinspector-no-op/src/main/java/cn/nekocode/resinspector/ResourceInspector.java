@@ -17,14 +17,29 @@
 package cn.nekocode.resinspector;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
+import android.view.View;
 
 /**
  * @author nekocode (nekocode.cn@gmail.com)
  */
 public class ResourceInspector {
 
-    public static Context wrap(Context base) {
+    @NonNull
+    public static Context wrap(@NonNull Context base) {
         return base;
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public static boolean isViewBeingInspected(@Nullable View view) {
+        return false;
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    @Nullable
+    public static String getViewLayoutResName(@Nullable View view) {
+        return null;
+    }
 }
