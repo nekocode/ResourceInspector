@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,9 @@ import com.facebook.stetho.server.ServerManager;
 import com.facebook.stetho.server.SocketHandler;
 import com.facebook.stetho.server.SocketHandlerFactory;
 
+import org.xmlpull.v1.XmlPullParser;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -51,6 +55,7 @@ import java.util.Collections;
  * @author nekocode (nekocode.cn@gmail.com)
  */
 public class ResourceInspector {
+    private static final String TAG = ResourceInspector.class.getSimpleName();
     private static final int TAG_RES_NAME = 0xF0F01358;
     private static final String DEVTOOLS_SUFFIX = "_devtools_remote";
 
@@ -154,11 +159,22 @@ public class ResourceInspector {
         }
 
         @Override
-        public View inflate(int resource, ViewGroup root, boolean attachToRoot) {
+        public void setFactory(Factory factory) {
+            original.setFactory(factory);
+        }
+
+        @Override
+        public void setFactory2(Factory2 factory) {
+            original.setFactory2(factory);
+            setPrivateFactoryInternal();
+        }
+
+        @Override
+        public View inflate(int resourceId, ViewGroup root, boolean attachToRoot) {
             final Resources res = getContext().getResources();
-            final String packageName = res.getResourcePackageName(resource);
-            final String resName = res.getResourceEntryName(resource);
-            final View view = original.inflate(resource, root, attachToRoot);
+            final String packageName = res.getResourcePackageName(resourceId);
+            final String resName = res.getResourceEntryName(resourceId);
+            final View view = original.inflate(resourceId, root, attachToRoot);
 
             if (!appPackageName.equals(packageName)) {
                 return view;
@@ -172,6 +188,43 @@ public class ResourceInspector {
             targetView.setTag(TAG_RES_NAME, resName);
 
             return view;
+        }
+
+        @Override
+        public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
+            return super.inflate(parser, root, attachToRoot);
+        }
+
+        private void setPrivateFactoryInternal() {
+            // Skip if not attached to an activity.
+            if (!(getContext() instanceof Factory2)) {
+                return;
+            }
+
+            final Method setPrivateFactoryMethod = getMethod(LayoutInflater.class, "setPrivateFactory");
+            if (setPrivateFactoryMethod != null) {
+                invokeMethod(original, setPrivateFactoryMethod, (Factory2) getContext());
+            }
+        }
+
+        static Method getMethod(Class clazz, String methodName) {
+            final Method[] methods = clazz.getMethods();
+            for (Method method : methods) {
+                if (method.getName().equals(methodName)) {
+                    method.setAccessible(true);
+                    return method;
+                }
+            }
+            return null;
+        }
+
+        static void invokeMethod(Object object, Method method, Object... args) {
+            try {
+                if (method == null) return;
+                method.invoke(object, args);
+            } catch (Exception e) {
+                Log.d(TAG, "Can't invoke method using reflection", e);
+            }
         }
     }
 }
