@@ -45,8 +45,6 @@ import com.facebook.stetho.server.ServerManager;
 import com.facebook.stetho.server.SocketHandler;
 import com.facebook.stetho.server.SocketHandlerFactory;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,16 +153,18 @@ public class ResourceInspector {
 
         @Override
         public LayoutInflater cloneInContext(Context newContext) {
-            return new InspectorLayoutInflater(this.original, newContext);
+            return new InspectorLayoutInflater(original.cloneInContext(newContext), newContext);
         }
 
         @Override
         public void setFactory(Factory factory) {
+            super.setFactory(factory);
             original.setFactory(factory);
         }
 
         @Override
         public void setFactory2(Factory2 factory) {
+            super.setFactory2(factory);
             original.setFactory2(factory);
             setPrivateFactoryInternal();
         }
@@ -188,11 +188,6 @@ public class ResourceInspector {
             targetView.setTag(TAG_RES_NAME, resName);
 
             return view;
-        }
-
-        @Override
-        public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
-            return super.inflate(parser, root, attachToRoot);
         }
 
         private void setPrivateFactoryInternal() {
