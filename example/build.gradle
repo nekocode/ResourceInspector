@@ -26,5 +26,5 @@ dependencies {
     testCompile project(':resinspector-no-op')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBS_VERSION"
-    compile 'com.facebook.stetho:stetho:1.5.0'
+    compile "com.facebook.stetho:stetho:$STETHO_VERSION"
 }

@@ -6,7 +6,7 @@ android {
     buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion MIN_SDK_VERSION.toInteger()
         targetSdkVersion 25
     }
     lintOptions {
@@ -17,5 +17,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     provided "com.android.support:support-annotations:$SUPPORT_LIBS_VERSION"
-    provided 'com.facebook.stetho:stetho:1.5.0'
+    provided "com.facebook.stetho:stetho:$STETHO_VERSION"
 }
