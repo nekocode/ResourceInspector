@@ -3,9 +3,11 @@
 
 A debug tool to inspect the used layout files of current Activity. This tool is helpful when you want to find out the layout xml files used in current Activity from a large amount of resource files.
 
-This tool depenends on the **[Stetho](http://facebook.github.io/stetho/)** library. After you integrate this library to your project, you can open the inspector in your Chrome's DevTools page (you can navigate to `chrome://inspect` for opening it).
+This tool depenends on the **[Stetho](http://facebook.github.io/stetho/)** library. After you integrate this library to your project, you can open the Chrome's [DevTools window](https://developer.chrome.com/devtools#devtools-window) (navigate to `chrome://inspect` for opening it) to inspect your current Activity.
 
 ![Screenshot](img/screenshot.png)
+
+You can click the ![Icon](img/icon.png) icon in the DevTools window to switch your Application to the search model. And then you can click on the widget you want to search in your Activity to quickly locate the corresponding element in the DevTools window.
 
 ## Getting started
 
