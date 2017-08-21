@@ -1,7 +1,7 @@
 # README
 [![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Release](https://jitpack.io/v/nekocode/ResourceInspector.svg)](https://jitpack.io/#nekocode/ResourceInspector)
 
-A debug tool to inspect the used layout files of current Activity. This tool is helpful when you want to find out the layout xml files used in current Activity from a large amount of resource files.
+A debug tool to inspect used layout files of current Activity. This tool is helpful when you want to find out layout xml files used in current Activity from a large amount of resource files.
 
 This tool depenends on the **[Stetho](http://facebook.github.io/stetho/)** library. After you integrate this library to your project, you can open the Chrome's [DevTools window](https://developer.chrome.com/devtools#devtools-window) (navigate to `chrome://inspect` for opening it) to inspect your current Activity.
 
