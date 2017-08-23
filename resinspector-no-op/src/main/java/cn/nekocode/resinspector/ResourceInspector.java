@@ -42,4 +42,8 @@ public class ResourceInspector {
     public static String getViewLayoutResName(@Nullable View view) {
         return null;
     }
+
+    public static void initialize(@NonNull final Context context) {
+
+    }
 }
