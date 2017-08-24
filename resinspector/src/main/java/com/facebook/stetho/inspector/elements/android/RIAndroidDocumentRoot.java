@@ -22,21 +22,19 @@ import com.facebook.stetho.inspector.elements.NodeType;
  */
 final class RIAndroidDocumentRoot extends AbstractChainedDescriptor<RIAndroidDocumentRoot> {
 
-  @Override
-  protected NodeType onGetNodeType(RIAndroidDocumentRoot element) {
-    return NodeType.DOCUMENT_NODE;
-  }
+    @Override
+    protected NodeType onGetNodeType(RIAndroidDocumentRoot element) {
+        return NodeType.DOCUMENT_NODE;
+    }
 
-  @Override
-  protected String onGetNodeName(RIAndroidDocumentRoot element) {
-    return "root";
-  }
+    @Override
+    protected String onGetNodeName(RIAndroidDocumentRoot element) {
+        return "root";
+    }
 
-  @Override
-  protected void onGetChildren(RIAndroidDocumentRoot element, Accumulator<Object> children) {
-    final Activity topActivity = ActivityTracker.get().tryGetTopActivity();
-    children.store(topActivity != null ? topActivity : new No_Activated_Activity());
-  }
-
-  private static class No_Activated_Activity {}
+    @Override
+    protected void onGetChildren(RIAndroidDocumentRoot element, Accumulator<Object> children) {
+        final Activity topActivity = ActivityTracker.get().tryGetTopActivity();
+        children.store(topActivity != null ? topActivity : new RINoActivatedActivityDescriptor());
+    }
 }

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.facebook.stetho.common.Accumulator;
 import com.facebook.stetho.common.Predicate;
@@ -93,11 +94,12 @@ final class RIAndroidDocumentProvider extends ThreadBoundProxy
                 .registerDescriptor(Window.class, new WindowDescriptor())
                 .registerDescriptor(Dialog.class, new DialogDescriptor())
                 .registerDescriptor(View.class, new RIViewDescriptor())
-                .registerDescriptor(ViewGroup.class, new RIViewGroupDescriptor())
+                .registerDescriptor(ViewGroup.class, new ViewGroupDescriptor())
+                .registerDescriptor(RINoActivatedActivityDescriptor.class, new RINoActivatedActivityDescriptor())
                 .registerDescriptor(Object.class, new ObjectDescriptor());
 
         DialogFragmentDescriptor.register(mDescriptorMap);
-        FragmentDescriptor.register(mDescriptorMap);
+        RIFragmentDescriptor.register(mDescriptorMap);
 
         for (int i = 0, size = descriptorProviders.size(); i < size; ++i) {
             final DescriptorProvider descriptorProvider = descriptorProviders.get(i);
