@@ -7,7 +7,7 @@ This tool depenends on the **[Stetho](http://facebook.github.io/stetho/)** libra
 
 ![Screenshot](img/screenshot.png)
 
-You can click the ![Icon](img/icon.png) icon in the DevTools window to switch your Application to the search model. And then you can click on the widget you want to search in your Activity to quickly locate the corresponding element in the DevTools window.
+You can click the ![Icon](img/icon.png) icon in the DevTools window to switch your Application to the search mode. And then you can click on the widget which you want to search in your Activity to quickly locate the corresponding element in the DevTools window.
 
 (PS: To quickly expand all elements, just hold `Opt` and click on the arrow icon of root element.)
 
